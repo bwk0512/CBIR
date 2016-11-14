@@ -12,8 +12,8 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText searchText;
-    Button searchButton;
+    EditText searchText; // 테스트1
+    Button searchButton; // 테스트2
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
