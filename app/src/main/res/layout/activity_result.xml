@@ -14,7 +14,7 @@
         android:gravity="center_horizontal">
 
         <EditText
-            android:id="@+id/searchText2"
+            android:id="@+id/searchBox2"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:hint="search"
@@ -42,7 +42,7 @@
         >
 
         <LinearLayout
-            android:id="@+id/imagelayout"
+            android:id="@+id/imageListlayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">

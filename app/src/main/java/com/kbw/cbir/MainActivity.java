@@ -15,35 +15,38 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText searchText;
-    Button searchButton;
+    EditText searchBox; // 검색창
+    Button searchButton; // 검색버튼
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        searchText = (EditText) findViewById(R.id.searchText);
+        searchBox = (EditText) findViewById(R.id.searchBox);
         searchButton = (Button) findViewById(R.id.searchButton);
 
+        // 검색버튼
         searchButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String str = searchText.getText().toString();
+                String str = searchBox.getText().toString(); // 검색어 불러오기
 
+                // SharedPreferences - 검색어 저장
                 SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
                 SharedPreferences.Editor editor = pref.edit();
-                editor.putString("content", str);
+                editor.putString("keyword", str);
                 editor.commit();
 
+                // 화면 전환
                 Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
                 startActivity(intent);
 
-                //Toast.makeText(MainActivity.this, str, Toast.LENGTH_SHORT).show();
             }
         });
 
-        searchText.setOnKeyListener(new View.OnKeyListener() {
+        // 검색창 : 엔터가 입력되면 '검색버튼' 호출
+        searchBox.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
                 if(i == keyEvent.KEYCODE_ENTER)
@@ -56,12 +59,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // 레이아웃의 길이를 구하기 위한 함수
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
 
         RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.activity_main);
 
+        // SharedPreferences - 레이아웃 가로길이 저장
         SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putInt("layoutWidth", mainLayout.getWidth());
