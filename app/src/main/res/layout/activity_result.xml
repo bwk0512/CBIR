@@ -28,13 +28,20 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/imagelayout"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/searchlayout"
-        android:orientation="vertical">
+        >
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/imagelayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </RelativeLayout>
