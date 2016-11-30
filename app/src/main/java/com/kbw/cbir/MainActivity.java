@@ -15,10 +15,8 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    RelativeLayout layout;
-
-    EditText searchText; // 테스트1
-    Button searchButton; // 테스트2
+    EditText searchText;
+    Button searchButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +60,11 @@ public class MainActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
 
-        layout = (RelativeLayout) findViewById(R.id.activity_main);
+        RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.activity_main);
 
         SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
-        editor.putInt("layoutWidth", layout.getWidth());
+        editor.putInt("layoutWidth", mainLayout.getWidth());
         editor.commit();
     }
 }
