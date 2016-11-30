@@ -3,6 +3,8 @@ package com.kbw.cbir;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
@@ -11,7 +13,7 @@ import android.widget.TextView;
 
 public class ResultActivity extends AppCompatActivity {
 
-    TextView textView;
+    LinearLayout imageLayout;
 
     String str;
 
@@ -20,12 +22,32 @@ public class ResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
-        textView = (TextView) findViewById(R.id.textView);
-
         SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
         str = pref.getString("content", "No Value");
 
-        textView.setText(str);
+        imageLayout = (LinearLayout) findViewById(R.id.imagelayout);
 
+        loadingImage();
+    }
+
+    public void loadingImage() {
+
+        int num = 2;
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+
+        while(num != 0) {
+            ImageView imgView = new ImageView(this);
+            imgView.setImageResource(R.drawable.c01);
+
+            //imgView.setLayoutParams();
+
+            layout.addView(imgView);
+
+            num--;
+        }
+
+        imageLayout.addView(layout);
     }
 }
