@@ -12,6 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 /**
  * Created by hyo99 on 2016-11-10.
  */
@@ -95,4 +98,7 @@ public class ResultActivity extends AppCompatActivity {
 
         return imgView;
     }
+
+
+
 }
