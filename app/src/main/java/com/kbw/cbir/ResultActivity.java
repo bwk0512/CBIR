@@ -12,8 +12,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
 /**
  * Created by hyo99 on 2016-11-10.
@@ -29,6 +38,9 @@ public class ResultActivity extends AppCompatActivity {
     int widthLayout; // 이미지 가로길이
     int imgTotalNum; // 불러올 이미지 총 수
 
+    private Retrofit mRetrofit;
+    private ApiInterface mApiInterface;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,12 +50,20 @@ public class ResultActivity extends AppCompatActivity {
         searchBox = (EditText) findViewById(R.id.searchBox2);
         searchButton = (Button) findViewById(R.id.searchButton2);
 
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+        mRetrofit = new Retrofit.Builder().baseUrl(mApiInterface.API_URL).addConverterFactory(GsonConverterFactory.create(gson)).build();
+        mApiInterface = mRetrofit.create(ApiInterface.class);
+
         // SharedPreferences - 검색어, 레이아웃 가로길이 불러오기
         SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
         keyword = pref.getString("keyword", "No Value");
         widthLayout = pref.getInt("layoutWidth", 0);
 
         searchBox.setText(keyword); // 검색창에 keyword 출력유지
+
+        //selectData();
 
         loadImageList(); // 이미지리스트 호출
     }
@@ -93,12 +113,43 @@ public class ResultActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String str = String.valueOf(view.getTag()); // 고유태그 불러오기
                 Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show(); // 체크
+                selectData();
             }
         });
 
         return imgView;
     }
 
+    public void selectData() {
 
+        Log.d("Run : ", "Good job");
+
+        Call<List<Item>> selectAllItem = mApiInterface.selectAllItem();
+        selectAllItem.enqueue(new retrofit2.Callback<List<Item>>() {
+            @Override
+            public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
+                Log.d("Run2 : ", "Good job2");
+
+                List<Item> list = response.body();
+
+                for(int i=0; i<list.size(); i++) {
+                    Log.d("name : ", list.get(i).getmName());
+                    Log.d("url : ", list.get(i).getmURL());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Item>> call, Throwable t) {
+                Log.d("Run2 : ", "Fail");
+            }
+        });
+    }
+
+    public interface ApiInterface {
+        public static final String API_URL = "http://bwk.iptime.org:12777";
+
+        @GET("/test.php")
+        Call<List<Item>> selectAllItem ();
+    }
 
 }
