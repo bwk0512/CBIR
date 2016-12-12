@@ -5,6 +5,8 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="colorEditText">#F0F8FF</color>
+    <color name="colorBackground">#696969</color>
 
+    <color name="colorWhite">#FFFFFF</color>
 
 </resources>

@@ -58,18 +58,25 @@ public class MainActivity extends AppCompatActivity {
         searchButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String str = searchBox.getText().toString(); // 검색어 불러오기
-                Log.v("Main keyword is ", str);
 
-                // SharedPreferences - 검색어 저장
-                SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
-                SharedPreferences.Editor editor = pref.edit();
-                editor.putString("keyword", str);
-                editor.commit();
+                if(searchBox.getText().toString().equals("")) {
+                    Toast.makeText(getApplicationContext(), "검색어를 입력하십시오", Toast.LENGTH_SHORT).show(); // 체크
+                }
+                else {
+                    String str = searchBox.getText().toString(); // 검색어 불러오기
+                    Log.v("Main keyword is ", str);
 
-                // 화면 전환
-                Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
-                startActivity(intent);
+                    // SharedPreferences - 검색어 저장
+                    SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putString("keyword", str);
+                    editor.putInt("image", 0);
+                    editor.commit();
+
+                    // 화면 전환
+                    Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
+                    startActivity(intent);
+                }
 
             }
         });

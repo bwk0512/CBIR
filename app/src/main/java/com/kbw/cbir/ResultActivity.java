@@ -27,6 +27,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
+import static java.sql.Types.INTEGER;
+
 /**
  * Created by hyo99 on 2016-11-10.
  */
@@ -41,6 +43,7 @@ public class ResultActivity extends AppCompatActivity {
     Button searchButton; // 검색버튼
 
     String keyword = " "; // 검색어
+    int cbirNum = 0; // CBIR한 이미지
     int widthLayout; // 이미지 가로길이
     int imgTotalNum; // 불러올 이미지 총 수
     int imgArr[]; // 불러올 이미지 번호
@@ -59,6 +62,7 @@ public class ResultActivity extends AppCompatActivity {
         // SharedPreferences - 검색어, 레이아웃 가로길이 불러오기
         SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
         keyword = pref.getString("keyword", " ");
+        cbirNum = pref.getInt("image",0);
         widthLayout = pref.getInt("layoutWidth", 0);
 
         searchBox.setText(keyword); // 검색창에 keyword 출력유지
@@ -74,16 +78,22 @@ public class ResultActivity extends AppCompatActivity {
         searchButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String str = searchBox.getText().toString(); // 검색어 불러오기
+                if(searchBox.getText().toString().equals("")) {
+                    Toast.makeText(getApplicationContext(), "검색어를 입력하십시오", Toast.LENGTH_SHORT).show(); // 체크
+                }
+                else {
+                    String str = searchBox.getText().toString(); // 검색어 불러오기
 
-                SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
-                SharedPreferences.Editor editor = pref.edit();
-                editor.putString("keyword", str);
-                editor.commit();
+                    SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putString("keyword", str);
+                    editor.putInt("image", 0);
+                    editor.commit();
 
-                Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
-                finish();
-                startActivity(intent);
+                    Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
+                    finish();
+                    startActivity(intent);
+                }
 
             }
         });
@@ -105,80 +115,40 @@ public class ResultActivity extends AppCompatActivity {
     public void loadKeywordImageList() {
 
         int i;
-        int num = 0;
-        // keyword가 포함된 이미지를 찾는다
-        for(i=0; i<mlist.size(); i++)
-        {
-            if(mlist.get(i).getmName().contains(keyword))
-            {
-                Log.v("일치하는 옷은 ", mlist.get(i).getmName());
-                imgArr[num] = mlist.get(i).getmId();
-                num++;
+
+        if(cbirNum == 0) {
+            int num = 0;
+            // keyword가 포함된 이미지를 찾는다
+            for (i = 0; i < mlist.size(); i++) {
+                if (mlist.get(i).getmName().contains(keyword)) {
+                    Log.v("일치하는 옷은 ", mlist.get(i).getmName());
+                    imgArr[num] = mlist.get(i).getmId();
+                    num++;
+                }
             }
+            imgTotalNum = num ;
         }
-        imgTotalNum = num+1;
+        else {
+            int num = 0;
 
-        i=0;
-        while(i < imgTotalNum) {
+            String str = mlist.get(cbirNum-1).getmURL();
+            String strN = "";
 
-            if(imgTotalNum-i == 1) {
-                // 새로운 레이아웃 생성
-                LinearLayout layout = new LinearLayout(this);
-                layout.setOrientation(LinearLayout.HORIZONTAL);
-
-                layout.addView(loadImage(imgArr[i])); // 좌측 이미지
-                i++;
-
-                imgListlayout.addView(layout); // 레이아웃에 이미지 넣기
+            for(i=0; i< str.length(); i++) {
+                if(str.charAt(i) == '.') {
+                    Log.v("cbir is ", strN);
+                    imgArr[num] = Integer.parseInt(strN);
+                    num++;
+                    strN = "";
+                }
+                else {
+                    strN += str.charAt(i);
+                }
             }
-            else if(imgTotalNum-i == 2) {
-                // 새로운 레이아웃 생성
-                LinearLayout layout = new LinearLayout(this);
-                layout.setOrientation(LinearLayout.HORIZONTAL);
-
-                layout.addView(loadImage(imgArr[i])); // 좌측 이미지
-                i++;
-
-                layout.addView(loadImage(imgArr[i])); // 좌측 이미지
-                i++;
-
-                imgListlayout.addView(layout); // 레이아웃에 이미지 넣기
-            }
-            else {
-                // 새로운 레이아웃 생성
-                LinearLayout layout = new LinearLayout(this);
-                layout.setOrientation(LinearLayout.HORIZONTAL);
-
-                layout.addView(loadImage(imgArr[i])); // 좌측 이미지
-                i ++;
-
-                layout.addView(loadImage(imgArr[i])); // 우측 이미지
-                i ++;
-
-                layout.addView(loadImage(imgArr[i])); // 우측 이미지
-                i ++;
-
-                imgListlayout.addView(layout); // 레이아웃에 이미지 넣기
-            }
-
+            imgTotalNum = num;
         }
-    }
 
-    public void loadSimilarityImageList() {
-
-        int i;
-        int num = 0;
-        // keyword가 포함된 이미지를 찾는다
-        for(i=0; i<mlist.size(); i++)
-        {
-            if(mlist.get(i).getmName().contains(keyword))
-            {
-                imgArr[num] = mlist.get(i).getmId();
-                num++;
-            }
-        }
-        imgTotalNum = num+1;
-
+        Log.v("출력할 이미지 갯수는 ", String.valueOf(imgTotalNum));
         i=0;
         while(i < imgTotalNum) {
 
@@ -229,7 +199,7 @@ public class ResultActivity extends AppCompatActivity {
     // 이미지를 불러와 imageView를 생성한다
     public ImageView loadImage(int imageNum) {
         ImageView imgView = new ImageView(this); // 새로운 이미지뷰 생성
-        
+
         imgView.setImageResource(R.drawable.s001 +imageNum-1); // 이미지 불러오기
 
         imgView.setTag(imageNum); // 이미지 고유태그 달기
@@ -241,6 +211,16 @@ public class ResultActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String str = String.valueOf(view.getTag()); // 고유태그 불러오기
                 Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show(); // 체크
+
+                //번호 할당
+                SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putInt("image", Integer.parseInt(str));
+                editor.commit();
+
+                Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
+                finish();
+                startActivity(intent);
             }
         });
 
