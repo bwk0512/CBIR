@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
+    android:background="@color/colorWhite"
     android:focusable="true"
     android:focusableInTouchMode="true">
 
@@ -20,7 +20,7 @@
             android:layout_height="match_parent"
             android:hint="  search"
             android:ems="10"
-            android:background="@color/colorWhite"
+            android:background="@color/colorEditText"
             />
 
         <Button
@@ -36,10 +36,20 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/searchlayout"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
+        android:background="@color/colorBlack"
+        android:orientation="horizontal"
+        android:id="@+id/layoutLine"></LinearLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/searchlayout"
+        android:layout_below="@id/layoutLine"
         >
 
         <LinearLayout

@@ -71,6 +71,12 @@ public class ResultActivity extends AppCompatActivity {
 
         loadDataFromDB(); // 모든 이미지 데이터를 불러옴
 
+        try {
+            Thread.sleep(2500);
+        } catch (InterruptedException e) {
+            System.out.println(e.getMessage());
+        }
+
         Log.v("keyword is ", keyword);
         loadKeywordImageList(); // 이미지리스트 호출
 
@@ -90,6 +96,7 @@ public class ResultActivity extends AppCompatActivity {
                     editor.putInt("image", 0);
                     editor.commit();
 
+                    imgListlayout.removeAllViews();
                     Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
                     finish();
                     startActivity(intent);
@@ -110,6 +117,14 @@ public class ResultActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        imgListlayout.removeAllViews();
+
+        super.onDestroy();
     }
 
     public void loadKeywordImageList() {
@@ -219,7 +234,7 @@ public class ResultActivity extends AppCompatActivity {
                 editor.commit();
 
                 Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
-                finish();
+                //finish();
                 startActivity(intent);
             }
         });

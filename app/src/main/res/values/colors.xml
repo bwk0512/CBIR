@@ -8,5 +8,6 @@
     <color name="colorBackground">#696969</color>
 
     <color name="colorWhite">#FFFFFF</color>
+    <color name="colorBlack">#000000</color>
 
 </resources>
